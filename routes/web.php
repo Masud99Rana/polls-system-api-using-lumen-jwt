@@ -21,3 +21,15 @@ $router->get('/', function () use ($router) {
     	'Developer' => 'Masud Rana'
     ]);
 });
+
+$router->group([
+	'prefix' =>'api/v1',
+], function() use ($router){
+	$router->get('/','ExampleController@index');
+	// 
+	
+	// Users Resource
+	$router->get('/users','UsersController@index');
+	$router->post('/users','UsersController@create');
+	
+});
