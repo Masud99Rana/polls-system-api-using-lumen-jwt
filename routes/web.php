@@ -38,6 +38,10 @@ $router->group([
 		$router->get('/users','UsersController@index');
 		$router->get('/me','UsersController@me');
 		$router->patch('/me/update','UsersController@update');
+
+		// Question Resource
+		$router->post('/questions','QuestionsController@create');
+		$router->get('/questions','QuestionsController@index');
 	});
 	
 });
