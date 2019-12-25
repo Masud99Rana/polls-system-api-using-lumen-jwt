@@ -70,4 +70,36 @@ class UsersController extends Controller
             ], 400); // 400 bad request
         }  
     }
+
+    public function authenticate(Request $request){
+        
+         try{
+            $this->validate($request, [
+                'email' => 'required|email',
+                'password' => 'required|min:6'
+            ]); 
+        } catch(ValidationException $e){
+             
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422); // 422  Unprocessable entity
+        }
+
+        $token = app('auth')->attempt($request->only('email', 'password'));
+
+        
+        if($token){
+            return response()->json([
+                'success' => true,
+                'message' => 'User authenticated',
+                'token' => $token,
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid Credentials',
+        ], 400); // 400  Bad request
+    }
 }

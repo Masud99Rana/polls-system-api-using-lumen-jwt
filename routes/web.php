@@ -26,7 +26,9 @@ $router->group([
 	'prefix' =>'api/v1',
 ], function() use ($router){
 	$router->get('/','ExampleController@index');
-	// 
+	
+	// User Authentication
+	$router->post('/login','UsersController@authenticate');
 	
 	// Users Resource
 	$router->get('/users','UsersController@index');
