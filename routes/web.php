@@ -31,7 +31,13 @@ $router->group([
 	$router->post('/login','UsersController@authenticate');
 	
 	// Users Resource
-	$router->get('/users','UsersController@index');
 	$router->post('/users','UsersController@create');
+
+	// Restricted Routes
+	$router->group(['middleware' => 'auth'], function() use ($router){
+		$router->get('/users','UsersController@index');
+		$router->get('/me','UsersController@me');
+		$router->patch('/me/update','UsersController@update');
+	});
 	
 });

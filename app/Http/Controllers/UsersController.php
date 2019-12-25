@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller
 {
@@ -28,21 +29,38 @@ class UsersController extends Controller
     // create new user
     public function create(Request $request){
         
-        try{
-           $this->validate($request, [
-               'full_name' => 'required',
-               'username' => 'required|min:6',
-               'email' => 'required|email',
-               'password' => 'required|min:6'
-           ]); 
-       } catch(ValidationException $e){
+       //  try{
+       //     $this->validate($request, [
+       //         'full_name' => 'required',
+       //         'username' => 'required|min:6',
+       //         'email' => 'required|email',
+       //         'password' => 'required|min:6'
+       //     ]); 
+       // } catch(ValidationException $e){
             
+       //      return response()->json([
+       //          'success' => false,
+       //          'message' => $e->getMessage(),
+       //      ], 422); // 422  Unprocessable entity
+       // }
+       // 
+        $input = $request->only('full_name', 'username', 'email','password');
+        
+        $rules = [
+            'full_name' => 'required',
+            'username' => 'required|min:6|unique:users',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6'
+        ]; 
+
+        $validator = Validator::make($input, $rules);
+
+        if($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'error' => $validator->messages(),
             ], 422); // 422  Unprocessable entity
-       }
-
+        }
 
        try{
             $id = app('db')->table('users')->insertGetId([
@@ -66,23 +84,27 @@ class UsersController extends Controller
         } catch(PDOException $e){
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 400); // 400 bad request
         }  
     }
 
     public function authenticate(Request $request){
         
-         try{
-            $this->validate($request, [
-                'email' => 'required|email',
-                'password' => 'required|min:6'
-            ]); 
-        } catch(ValidationException $e){
-             
+        $credentials = $request->only('email', 'password');
+
+        $rules = [
+            'email' => 'required|email',
+            'password' => 'required|min:6'
+        ];
+
+        $validator = Validator::make($credentials, $rules);
+        
+        if($validator->fails()) {
+         
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'error' => $validator->messages(),
             ], 422); // 422  Unprocessable entity
         }
 
@@ -99,7 +121,66 @@ class UsersController extends Controller
         
         return response()->json([
             'success' => false,
-            'message' => 'Invalid Credentials',
+            'error' => 'Invalid Credentials',
         ], 400); // 400  Bad request
     }
+
+    public function me(){
+        $user = app('auth')->user();
+
+        if($user){
+            return response()->json([
+                'success' => true,
+                'message' => 'User profile found',
+                'user' => $user,
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'error' => 'Not found',
+        ], 404);
+    }
+
+    /**
+     * API Update user profile
+     */
+    public function update(Request $request)
+    {   
+        $input = $request->only('full_name');
+
+        $rules =[
+            'full_name' => 'required'
+        ];
+
+        $validator = Validator::make($input, $rules);
+       
+        if($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => $validator->messages(),
+            ], 422); // 422  Unprocessable entity
+        }
+
+
+        try{
+            $user = app('auth')->user();
+            $user->update(['full_name' => $request->full_name]);
+
+            
+            return response()->json([
+                'id' => $user->id,
+                'full_name' => $user->full_name,
+                'username' => $user->username,
+                'email' => $user->email,
+            ], 201); // resource created
+         
+        } catch(PDOException $e){
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 400); // 400 bad request
+        }
+    }
+
 }
