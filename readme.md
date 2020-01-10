@@ -18,7 +18,7 @@
 [![Gmail][gmail-shield]][gmail-url]
 -->
 
-# Polls System Restful api
+# Polls System Restful API
 > **Note:** This repository contains the core code of a Polls Sytem API to detect most popular programming language by taking vote from the programmer in a RESTful way. It is one of my api projects which i have made to practice RESTful API principles with Lumen ( Micro Web Framework ) .
 
 [![Made with love by Masud Rana][madewith-shield]][linkedin-url] 
@@ -100,7 +100,7 @@ Basic understanding of the technologies that i have mentioned in "[Built With](#
 
 1. Clone the repo
 ```sh
-git clone https://github.com/Masud99Rana/polls-sytem-api-using-lumen-jwt
+git clone https://github.com/Masud99Rana/polls-system-api-using-lumen-jwt
 ```
 2. Copy **.env.example** to **.env** and fill in your database credentials
 3. Run **composer install**
@@ -154,7 +154,7 @@ Md. Masud Rana
 [![My LinkedIn Profile][linkedin-shield]][linkedin-url]
 [![Gmail][gmail-shield]][gmail-url]
 
-Project Link: [https://github.com/Masud99Rana/polls-sytem-api-using-lumen-jwt](https://github.com/Masud99Rana/polls-sytem-api-using-lumen-jwt)
+Project Link: [https://github.com/Masud99Rana/polls-system-api-using-lumen-jwt](https://github.com/Masud99Rana/polls-system-api-using-lumen-jwt)
 
 
 <!-- ACKNOWLEDGEMENTS -->
